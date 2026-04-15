@@ -8,6 +8,8 @@ from backend.database import create_auth_table, create_content_table, get_conn
 from backend.auth import pw_hashing, hash_match, create_token, decode_token
 from backend.models import UserAuth, UserNoteInput
 
+import os
+
 app = FastAPI()
 
 origins = [
