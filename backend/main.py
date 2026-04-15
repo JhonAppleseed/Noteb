@@ -29,6 +29,14 @@ def startup():
     create_auth_table()
     create_content_table()
 
+    conn = get_conn()
+    admin = conn.execute("SELECT * FROM tauth WHERE is_admin = 1").fetchone()
+    if not admin:
+        hashed = pw_hashing(os.getenv("ADMIN_PASSWORD"))
+        conn.execute("INSERT INTO tauth (name, password, is_admin) VALUES (?, ?, ?)", 
+                    ("admin", hashed, 1))
+        conn.commit()
+
 
 @app.post("/register")
 def user_register(user: UserAuth):
