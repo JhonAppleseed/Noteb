@@ -73,6 +73,8 @@ def user_login(user: UserAuth):
 def create_note(user: UserNoteInput, authorization: str = Header(None, alias="Authorization")):
     try:
         print(authorization)
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
         token = authorization.split(" ")[1]
         decoded = decode_token(token)
         conn = get_conn()
@@ -88,6 +90,8 @@ def create_note(user: UserNoteInput, authorization: str = Header(None, alias="Au
 @app.get("/notes")
 def fetch_notes(authorization: str = Header(None, alias="Authorization")):
     try:
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
         token = authorization.split(" ")[1]
         decoded = decode_token(token)
         conn = get_conn()
@@ -104,6 +108,8 @@ def fetch_notes(authorization: str = Header(None, alias="Authorization")):
 @app.delete("/notes/{id}")
 def delete_note(id: int, authorization: str = Header(None, alias="Authorization")):
     try:
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
         token = authorization.split(" ")[1]
         decoded = decode_token(token)
         conn = get_conn()
@@ -117,6 +123,8 @@ def delete_note(id: int, authorization: str = Header(None, alias="Authorization"
 @app.put("/notes/{id}")
 def update_note(id: int, user: UserNoteInput, authorization: str = Header(None, alias="Authorization")):
     try:
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
         token = authorization.split(" ")[1]
         decoded = decode_token(token)
         conn = get_conn()
