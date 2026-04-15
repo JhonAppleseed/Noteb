@@ -98,7 +98,7 @@ def fetch_notes(authorization: str = Header(None, alias="Authorization")):
         with conn:
             notes = conn.execute("SELECT * FROM tcontent WHERE user_id = ?", (decoded['user_id'], )).fetchall()
             user = conn.execute("SELECT name FROM tauth WHERE id = ?", (decoded['user_id'], )).fetchone()
-            is_admin = conn.execute("SELECT is_admin FROM tauth WHERE id = ?", (decoded['user_id'], )).fetchone()
+            is_admin = conn.execute("SELECT is_admin FROM tauth WHERE id = ?", (decoded['user_id'], )).fetchone()['isadmin']
             return {"notes": [dict(note) for note in notes], 'admin': is_admin, 'username': user['name'], 'message': 'Notes fetched'}
     except Exception as e:
         print(e)

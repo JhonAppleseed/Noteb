@@ -43,7 +43,7 @@ export function NotesApp({ onLogout, token }) {
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  console.log(userNoteData);
+  // console.log(userNoteData);
 
   const updateNoteContent = (content) => {
     setUserNoteData(
@@ -173,7 +173,6 @@ export function NotesApp({ onLogout, token }) {
                 {username
                   ? ` - ${username.charAt(0).toUpperCase() + username.slice(1)}`
                   : ""}
-                {console.log(adminStatus.is_admin)}
               </h1>
               <button
                 onClick={() => setShowConfirmLogout(true)}
