@@ -1,0 +1,75 @@
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# PYTHON BACKEND
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.venv/
+env/
+.env.local
+.env*.local
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs
+*.log
+
+# Testing / coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# =========================
+# SQLITE DATABASE
+# =========================
+*.sqlite3
+*.db
+*.db-journal
+
+# (Optional: keep a sample DB schema)
+# !schema.sql
+
+# =========================
+# NODE / REACT FRONTEND
+# =========================
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# React env files
+frontend/.env
+frontend/.env.*
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db

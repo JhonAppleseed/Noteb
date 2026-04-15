@@ -1,0 +1,9 @@
+notes/
+├── frontend/
+├── backend/
+│   ├── main.py
+│   ├── database.py
+│   ├── auth.py        # new — JWT and hashing logic
+│   └── data/
+│       └── db.sqlite
+└── run.py
