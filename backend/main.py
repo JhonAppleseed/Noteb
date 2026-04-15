@@ -13,7 +13,7 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "frontend-fd99.up.railway.app",
+    "https://frontend-fd99.up.railway.app",
     "https://noteb.up.railway.app"
     ]
 
