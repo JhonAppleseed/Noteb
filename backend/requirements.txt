@@ -1,4 +1,6 @@
-sqlite3
 fastapi
 uvicorn
 requests
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
