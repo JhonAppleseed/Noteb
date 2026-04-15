@@ -13,7 +13,8 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "selfless-blessing-production-fd99.up.railway.app"
+    "selfless-blessing-production-fd99.up.railway.app",
+    "https://noteb.up.railway.app"
     ]
 
 app.add_middleware(
