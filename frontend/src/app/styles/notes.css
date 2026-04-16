@@ -1,6 +1,6 @@
 .trash {
   background: #000000;
-  transform: scale(0.4); /* Adjust this value — 0.5 = 50% of original size */
+  transform: scale(40%); /* Adjust this value — 0.5 = 50% of original size */
   transform-origin: center center;
   width: 66px;
   height: 66px;

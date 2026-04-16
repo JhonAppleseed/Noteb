@@ -1,3 +1,4 @@
+// import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AuthCard } from "./AuthCard";
 
@@ -43,7 +44,7 @@ export function Register({ onRegister, onSwitchToLogin }) {
           <div>
             <input
               type="name"
-              placeholder="Name"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 transition-colors"
@@ -92,6 +93,24 @@ export function Register({ onRegister, onSwitchToLogin }) {
           >
             Already have an account? Sign in
           </button>
+        </div>
+        <div className="text-center space-x-4 mt-4">
+          <a
+            href="/termsofservice.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+          >
+            Terms of Service
+          </a>
+          <a
+            href="/privacypolicy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+          >
+            Privacy Policy
+          </a>
         </div>
       </form>
     </AuthCard>

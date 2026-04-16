@@ -62,7 +62,7 @@ def user_login(user: UserAuth):
             if not result:
                 return {"error": "User not found"}
             if hash_match(result['password'], user.password):
-                token = create_token(result["id"])
+                token = create_token(result["id"], result["is_admin"])
                 return {"token": token, "message": 'Login success'}
             return {"error": "Password doesn't match"}
     except Exception as e:
@@ -72,7 +72,6 @@ def user_login(user: UserAuth):
 @app.post("/notes")
 def create_note(user: UserNoteInput, authorization: str = Header(None, alias="Authorization")):
     try:
-        print(authorization)
         if not authorization or " " not in authorization:
             return {"error": "No token provided"}
         token = authorization.split(" ")[1]
@@ -134,5 +133,58 @@ def update_note(id: int, user: UserNoteInput, authorization: str = Header(None, 
     except Exception as e:
         print(e)
         return {'message': 'Note not updated'}
+    
+# =============
+# admin section
+# =============
+
+@app.get("/usersnotesadmin")
+def fetch_users_admin(authorization: str = Header(None, alias="Authorization")):
+    try:
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
+        token = authorization.split(" ")[1]
+        decoded = decode_token(token)
+
+        if not decoded['is_admin']: #"not admin"
+            return {"error": "Admin Not Operating"}
+
+        conn = get_conn()
+        with conn:
+            notes = conn.execute("""
+        SELECT 
+            tcontent.id,
+            tcontent.user_id,
+            tcontent.title,
+            tcontent.content,
+            tauth.name,
+            tauth.is_admin
+        FROM tcontent
+        JOIN tauth ON tcontent.user_id = tauth.id
+    """).fetchall()
+            return {"notes": [dict(note) for note in notes], 'message': 'Notes fetched'}
+    except Exception as e:
+        print(e)
+        return {'message': 'Notes not fetched'}
+    
+@app.delete("/adminUserNoteDelete/{id}")
+def delete_usernote_admin(id: int, authorization: str = Header(None, alias="Authorization")):
+    try:
+        if not authorization or " " not in authorization:
+            return {"error": "No token provided"}
+        
+        token = authorization.split(" ")[1]
+        decoded = decode_token(token)
+
+        if not decoded['is_admin']: #"not admin"
+            return {"error": "Admin Not Operating"}
+
+        conn = get_conn()
+        with conn:
+            conn.execute("DELETE FROM tcontent WHERE id = ?", (id,))
+            return {'message': 'Note deleted'}
+    except Exception as e:
+        print(e)
+        return {'message': 'Note not deleted'}
     
 #python -m uvicorn backend.main:app --reload

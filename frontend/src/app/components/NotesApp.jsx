@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Plus, LogOut } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
 import "../styles/notes.css";
+import AdminPanel from "./AdminPanel";
 
 export function NotesApp({ onLogout, token }) {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
+  const [saving, setSaving] = useState(false);
+
   const [username, setUsername] = useState(null);
-  const [adminStatus, setAdminStatus] = useState("");
+  const [adminPanel, setAdminPanel] = useState(true);
 
   const fetchUserNoteData = async (token) => {
     try {
@@ -16,8 +20,7 @@ export function NotesApp({ onLogout, token }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
-      setAdminStatus(data.admin);
-      setUsername(data.username);
+      setUsername(data.username); // keep for UI rendering elsewhere
       return data;
     } catch (error) {
       console.log(error);
@@ -124,9 +127,13 @@ export function NotesApp({ onLogout, token }) {
     if (!selectedNote || !selectedNoteId) return;
     if (typeof selectedNoteId === "string") return; // fake id, skip
     const timer = setTimeout(() => {
+      setSaving(false);
       userNoteUpdate(token);
     }, 1000);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setSaving(true);
+    };
   }, [userNoteData]);
 
   const userDeleteNote = async (token, selectedNoteId) => {
@@ -161,11 +168,18 @@ export function NotesApp({ onLogout, token }) {
     onLogout(); // then change the "site"
   };
 
+  const handleCloseAdminPanel = () => {
+    setAdminPanel(false);
+  };
+
+  const user = token ? jwtDecode(token) : null;
+  const isAdmin = user?.is_admin === 1;
+
   return (
     <>
       <div className="h-screen flex bg-white">
         {/* Sidebar */}
-        <div className="w-64 border-r border-gray-200 flex flex-col">
+        <div className="w-[20vw] border-r border-gray-200 flex flex-col">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-xl tracking-tight">
@@ -176,7 +190,7 @@ export function NotesApp({ onLogout, token }) {
               </h1>
               <button
                 onClick={() => setShowConfirmLogout(true)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4 text-gray-600 cursor-pointer" />
@@ -190,6 +204,16 @@ export function NotesApp({ onLogout, token }) {
               New note
             </button>
           </div>
+          {isAdmin && (
+            <div className="p-4 border-b border-gray-200 flex justify-center">
+              <button
+                className="justify-center cursor-pointer rounded-md flex bg-gray-200 hover:bg-gray-300 transition-all transition-300 w-full py-2"
+                onClick={() => setAdminPanel(true)}
+              >
+                Admin Panel
+              </button>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto">
             {userNoteData?.map((note) => (
@@ -244,7 +268,6 @@ export function NotesApp({ onLogout, token }) {
                     </h2>
                   )}
                   {selectedNoteId ? (
-                    //
                     <span
                       className="trash"
                       onClick={() => setShowConfirmDelete(true)}
@@ -254,6 +277,9 @@ export function NotesApp({ onLogout, token }) {
                   ) : (
                     <></>
                   )}
+                </div>
+                <div className="absolute top-0 px-2 text-gray-500">
+                  {saving && "Saving..."}
                 </div>
 
                 <div className="flex-1 px-16 py-12 overflow-y-auto">
@@ -285,7 +311,6 @@ export function NotesApp({ onLogout, token }) {
               <button
                 className="text-[2ch] text-black bg-white hover:bg-gray-200 px-4 py-2 rounded-md transition-colors cursor-pointer outline-1 outline-black"
                 onClick={() => {
-                  setAdminStatus(0);
                   handleLogout();
                 }}
               >
@@ -334,6 +359,15 @@ export function NotesApp({ onLogout, token }) {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* admin panel */}
+      {isAdmin && adminPanel && username !== null && (
+        <AdminPanel
+          sendCloseAdminPanel={handleCloseAdminPanel}
+          token={token}
+          isAdmin={isAdmin}
+          adminName={username}
+        />
+      )}
     </>
   );
 }

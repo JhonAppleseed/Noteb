@@ -1,3 +1,4 @@
+// import { Link } from "react-router-dom";
 import { useState } from "react";
 import { AuthCard } from "./AuthCard";
 
@@ -76,10 +77,28 @@ export function Login({ onLogin, onSwitchToRegister }) {
           <button
             type="button"
             onClick={onSwitchToRegister}
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
           >
             Don't have an account? Register
           </button>
+        </div>
+        <div className="text-center space-x-4 mt-4">
+          <a
+            href="/termsofservice.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+          >
+            Terms of Service
+          </a>
+          <a
+            href="/privacypolicy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors underline"
+          >
+            Privacy Policy
+          </a>
         </div>
       </form>
     </AuthCard>
