@@ -30,7 +30,7 @@ def hash_match(hashed_password, user_input):
         return False
 
 def create_token(user_id, is_admin, is_banned):
-    payload = {"user_id": user_id, 'is_admin': is_admin, 'is_banned': is_banned, "exp": datetime.datetime.now() + datetime.timedelta(hours=12)}
+    payload = {"user_id": user_id, "is_admin": is_admin, "is_banned": is_banned, "exp": datetime.datetime.now() + datetime.timedelta(hours=12)}
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 def decode_token(token):
