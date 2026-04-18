@@ -159,7 +159,7 @@ const ModNotes = ({ token, isAdmin }) => {
                 </button>
                 <button
                   className="text-[2ch] text-white bg-black hover:bg-gray-800 px-4 py-2 rounded-md transition-colors cursor-pointer outline-1 outline-white"
-                  onClick={() => setShowConfirmDelete(false)}
+                  onClick={() => setConfirmDelete(false)}
                 >
                   Cancel
                 </button>
