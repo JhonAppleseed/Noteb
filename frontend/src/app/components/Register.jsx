@@ -28,11 +28,9 @@ export function Register({ onRegister, onSwitchToLogin }) {
     e.preventDefault();
     if (password === confirmPassword) {
       const result = await storeUserRegisterData();
-      if (!result) {
-        setErrorMessage("This username is already in use!");
-        return;
-      }
+      setErrorMessage(result.message);
       onRegister();
+      return;
     }
     setErrorMessage("Passwords must match");
   };

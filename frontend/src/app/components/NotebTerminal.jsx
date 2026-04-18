@@ -5,9 +5,49 @@ const HOST = "NotebAdmin";
 // ── COMMANDS ──────────────────────────────────────────────
 
 export default function NotebTerminal({ token, isAdmin, adminName }) {
-  const banUser = () => {
-    console.log("1");
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+  const findUserAdmin = async (id, token) => {
+    try {
+      const response = await fetch(`${API_URL}/finduseradmin/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   };
+
+  const banUserAdmin = async (id, ban_status, token) => {
+    try {
+      const response = await fetch(`${API_URL}/adminbanuser/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ban_status: ban_status,
+        }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  // const changePassword
+
+  const [lastFindName, setLastFindName] = useState(null);
 
   const COMMANDS = {
     help: {
@@ -19,7 +59,6 @@ export default function NotebTerminal({ token, isAdmin, adminName }) {
         "  whoami       — show current user",
         "  status       — placeholder: check system status",
         "",
-        "Add your own commands inside the COMMANDS object.",
       ],
     },
 
@@ -33,16 +72,128 @@ export default function NotebTerminal({ token, isAdmin, adminName }) {
 
     ban: {
       description: "Ban user: ban -u -i [id]",
-      run: (args) => {
-        const userIndex = args.indexOf("-u");
-        const userName = if (userIndex !== -1); else args[userIndex + 1] 
-        const idIndex = args.indexOf("-i");
-        const userId = idIndex !== -1 ? args[idIndex + 1] : "N/A";
+      run: async (args) => {
+        try {
+          const ban_status = 1;
+          const userIndex = args.findIndex(
+            (arg) => arg === "-u" || arg === "--user",
+          );
+          if (userIndex === -1) {
+            return "ban command requires two parameters -u, -i";
+          }
+          const userName = args[userIndex + 1];
 
-        console.log(`Banning ID: ${userId}`);
-        banUser();
+          const idIndex = args.findIndex(
+            (arg) => arg === "-i" || arg === "--id",
+          );
+          const userId = idIndex !== -1 ? args[idIndex + 1] : "N/A";
 
-        return [`Target ID: ${userId}`, "Status: 1"];
+          console.log(`Banning ID: ${userId} | Banning Status: ${ban_status}`);
+          const message = await banUserAdmin(userId, ban_status, token);
+
+          return [`Target ID: ${userId}\nStatus: ${message.message}`];
+        } catch (error) {
+          console.log(error);
+          return "Error in banning";
+        }
+      },
+    },
+
+    uba: {
+      description: "Unban user: uba -u -i [id]",
+      run: async (args) => {
+        try {
+          const ban_status = 0;
+          const userIndex = args.findIndex(
+            (arg) => arg === "-u" || arg === "--user",
+          );
+          if (userIndex === -1) {
+            return "uba command requires two parameters -u, -i";
+          }
+          const userName = args[userIndex + 1];
+
+          const idIndex = args.findIndex(
+            (arg) => arg === "-i" || arg === "--id",
+          );
+          const userId = idIndex !== -1 ? args[idIndex + 1] : "N/A";
+
+          console.log(`Banning ID: ${userId} | Banning Status: ${ban_status}`);
+          const message = await banUserAdmin(userId, ban_status, token);
+
+          return [`Target ID: ${userId}\nStatus: ${message.message}`];
+        } catch (error) {
+          console.log(error);
+          return "Error in unbanning";
+        }
+      },
+    },
+
+    whois: {
+      description: "Who is user: whois -u -i [id]",
+      run: async (args) => {
+        try {
+          const userIndex = args.findIndex(
+            (arg) => arg === "-u" || arg === "--user",
+          );
+          const userName = args[userIndex + 1];
+
+          const idIndex = args.findIndex(
+            (arg) => arg === "-i" || arg === "--id",
+          );
+          const userId = idIndex !== -1 ? args[idIndex + 1] : undefined;
+          if (userIndex === -1 || idIndex === -1 || userId == undefined) {
+            return "whois command requires two parameters -u, -i with [id]";
+          }
+
+          const message = await findUserAdmin(userId, token);
+          console.log(message);
+
+          console.log(`USER ID: ${userId} | MESSAGE: ${message}`);
+
+          const user = message.user;
+
+          setLastFindName(user.name);
+
+          return [
+            `Target ID: ${userId} | STATUS: ${message.message}\nUSER NAME: ${user.name}\nIS BANNED: ${user.is_banned ? "True" : "False"}`,
+          ];
+        } catch (error) {
+          console.log(error);
+          return "Error in finding";
+        }
+      },
+    },
+
+    copy: {
+      description: "Copy username: copy -l -u",
+      run: async (args) => {
+        try {
+          const last = args.findIndex(
+            (arg) => arg === "-l" || arg === "--last",
+          );
+          const userName = args[last + 1];
+
+          const userInd = args.findIndex(
+            (arg) => arg === "-u" || arg === "--user",
+          );
+          const user = args[userInd + 1];
+
+          if (userInd === -1 || last === -1) {
+            return "Copy command requires two parameters -l, -u";
+          }
+          console.log(userInd, last);
+
+          if (!lastFindName) {
+            return ["COPY INTERRUPT: User not found"];
+          }
+
+          console.log(`TARGET: ${lastFindName}`);
+          navigator.clipboard.writeText(lastFindName);
+          return [`TARGET USER: ${lastFindName}\nSTATUS: COPIED`];
+        } catch (error) {
+          console.log(error);
+          return "Error in copying";
+        }
       },
     },
 

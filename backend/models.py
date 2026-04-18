@@ -12,3 +12,6 @@ class UserAuth(BaseModel):
 class UserNoteInput(BaseModel):
     title: str
     content: str
+
+class BanStatus(BaseModel):
+    ban_status: int

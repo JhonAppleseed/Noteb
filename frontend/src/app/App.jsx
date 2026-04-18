@@ -31,7 +31,8 @@ export default function App() {
       )}
       {currentView === "register" && (
         <Register
-          onRegister={() => setCurrentView("login")}
+          // onRegister={() => setCurrentView("login")}
+          onRegister={() => console.log("Register attempt")}
           onSwitchToLogin={() => setCurrentView("login")}
         />
       )}

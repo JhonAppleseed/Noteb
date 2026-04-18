@@ -11,7 +11,7 @@ export function NotesApp({ onLogout, token }) {
   const [saving, setSaving] = useState(false);
 
   const [username, setUsername] = useState(null);
-  const [adminPanel, setAdminPanel] = useState(true);
+  const [adminPanel, setAdminPanel] = useState(false);
 
   const fetchUserNoteData = async (token) => {
     try {
@@ -46,7 +46,7 @@ export function NotesApp({ onLogout, token }) {
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  // console.log(userNoteData);
+  console.log(userNoteData);
 
   const updateNoteContent = (content) => {
     setUserNoteData(
@@ -175,6 +175,14 @@ export function NotesApp({ onLogout, token }) {
   const user = token ? jwtDecode(token) : null;
   const isAdmin = user?.is_admin === 1;
 
+  const [openTagId, setOpenTagId] = useState(null);
+
+  const [currSearch, setCurrSearch] = useState("");
+
+  const filteredNotes = userNoteData.filter((note) =>
+    note.title.toLowerCase().includes(currSearch.toLowerCase()),
+  );
+
   return (
     <>
       <div className="h-screen flex bg-white">
@@ -182,7 +190,7 @@ export function NotesApp({ onLogout, token }) {
         <div className="w-[20vw] border-r border-gray-200 flex flex-col">
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-xl tracking-tight">
+              <h1 className="text-xl font-semibold tracking-tight">
                 Noteb
                 {username
                   ? ` - ${username.charAt(0).toUpperCase() + username.slice(1)}`
@@ -214,23 +222,68 @@ export function NotesApp({ onLogout, token }) {
               </button>
             </div>
           )}
+          <div className="p-4 border-b border-gray-200 flex justify-center">
+            <input
+              className="justify-center cursor-pointer rounded-md flex bg-gray-200 hover:bg-gray-300 transition-all px-4 transition-300 w-full py-2"
+              placeholder="Search..."
+              value={currSearch}
+              onChange={(e) => setCurrSearch(e.target.value)}
+            />
+          </div>
 
-          <div className="flex-1 overflow-y-auto">
-            {userNoteData?.map((note) => (
+          <div className="flex-1">
+            {filteredNotes?.map((note) => (
               <button
                 key={note.id}
                 onClick={() => setSelectedNoteId(note.id)}
-                className={`w-full px-6 py-4 text-left border-b border-gray-100 transition-colors ${
+                className={`flex justify-between w-full px-6 py-4 text-left border-b border-gray-100 transition-colors ${
                   selectedNoteId === note.id ? "bg-gray-50" : "hover:bg-gray-50"
                 }`}
               >
-                <div className="text-sm mb-1 truncate">{note.title}</div>
-                <div className="text-xs text-gray-500">
-                  {new Date(note.created_at).toLocaleDateString()}
+                <div className="mb-1 flex flex-col">
+                  <span className="inline-block max-w-37.5 truncate text-sm">
+                    {note.title}
+                  </span>
+                  <span className="inline-block max-w-37.5 truncate text-sm">
+                    {new Date(note.created_at).toLocaleDateString()}
+                  </span>
                 </div>
+                {/* Tags */}
+                {/* <AnimatePresence mode="wait">
+                  {selectedNoteId == note.id && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="flex items-center"
+                    >
+                      <div className="flex items-center relative">
+                        <span
+                          className="cursor-pointer text-[2ch] brightness-150 hover:brightness-125 transition-all transition-300"
+                          onClick={() =>
+                            setOpenTagId(
+                              selectedNoteId == openTagId
+                                ? null
+                                : selectedNoteId,
+                            )
+                          }
+                        >
+                          ➕
+                        </span>
+                        {selectedNoteId == openTagId && (
+                          <div className="w-20 h-auto bg-red-200 absolute left-full ml-10">
+                            tags
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence> */}
               </button>
             ))}
           </div>
+          {/*  */}
         </div>
 
         {/* Main content */}
@@ -245,7 +298,7 @@ export function NotesApp({ onLogout, token }) {
                 transition={{ duration: 0.15 }}
                 className="flex-1 flex flex-col"
               >
-                <div className="px-16 py-12 border-b border-gray-200 flex items-center justify-between">
+                <div className="px-16 py-12 gap-[2em] border-b border-gray-200 flex items-center justify-between">
                   {editingTitle ? (
                     <input
                       id={selectedNoteId}
@@ -267,15 +320,15 @@ export function NotesApp({ onLogout, token }) {
                       {selectedNote.title}
                     </h2>
                   )}
-                  {selectedNoteId ? (
+
+                  {/* NOTE DELETE */}
+                  {selectedNoteId && (
                     <span
                       className="trash"
                       onClick={() => setShowConfirmDelete(true)}
                     >
                       <span></span>
                     </span>
-                  ) : (
-                    <></>
                   )}
                 </div>
                 <div className="absolute top-0 px-2 text-gray-500">
@@ -295,7 +348,10 @@ export function NotesApp({ onLogout, token }) {
             )}
           </AnimatePresence>
         </div>
+
+        {/*  */}
       </div>
+
       {/* Logout  */}
       <AnimatePresence>
         {showConfirmLogout && (

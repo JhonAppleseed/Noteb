@@ -27,7 +27,7 @@ const ModNotes = ({ token, isAdmin }) => {
     const timer = setTimeout(() => {
       userNoteAdmin(token);
       setLoading(false);
-    }, 1000);
+    }, 500);
     return () => {
       clearTimeout(timer);
     };

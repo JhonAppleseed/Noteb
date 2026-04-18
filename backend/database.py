@@ -10,7 +10,9 @@ def create_auth_table():
                      id INTEGER PRIMARY KEY,
                      name TEXT NOT NULL UNIQUE,
                      password TEXT,
-                     is_admin INTEGER
+                     is_admin INTEGER,
+                     is_banned INTEGER,
+                     created_at TEXT
                      )
                     """)
 

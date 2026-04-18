@@ -29,8 +29,8 @@ def hash_match(hashed_password, user_input):
         # print("Incorrect password.")
         return False
 
-def create_token(user_id, is_admin):
-    payload = {"user_id": user_id, 'is_admin': is_admin, "exp": datetime.datetime.now() + datetime.timedelta(hours=12)}
+def create_token(user_id, is_admin, is_banned):
+    payload = {"user_id": user_id, 'is_admin': is_admin, 'is_banned': is_banned, "exp": datetime.datetime.now() + datetime.timedelta(hours=12)}
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
 def decode_token(token):
@@ -40,3 +40,7 @@ def decode_token(token):
         print(e)
     except jwt.InvalidTokenError as e:
         print(e)
+
+def check_banned(decoded):
+    if decoded['is_banned']:
+        return {"message": "User has been banned"}
