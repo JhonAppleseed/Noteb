@@ -2,22 +2,15 @@ import subprocess
 import sys
 import os
 
-def main():
-    frontend = subprocess.Popen(
-        ["npm.cmd", "run", "build"],
-        cwd=os.path.join(os.path.dirname(__file__), "frontend")
-    )
-    
+def main():    
     backend = subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "backend.main:app", "--reload"],
         cwd=os.path.join(os.path.dirname(__file__), "")
     )
 
     try:
-        frontend.wait()
         backend.wait()
     except KeyboardInterrupt:
-        frontend.terminate()
         backend.terminate()
 
 if __name__ == "__main__":
