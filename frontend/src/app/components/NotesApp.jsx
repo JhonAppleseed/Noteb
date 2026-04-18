@@ -30,7 +30,7 @@ export function NotesApp({ onLogout, token }) {
 
   useEffect(() => {
     fetchUserNoteData(token).then((data) => {
-      setUserNoteData(data.notes);
+      setUserNoteData(data?.notes || []);
       setSelectedNoteId(data?.notes?.[0]?.id || null);
     });
   }, [token]);
