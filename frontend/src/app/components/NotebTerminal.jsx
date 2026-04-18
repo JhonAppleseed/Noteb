@@ -17,7 +17,6 @@ export default function NotebTerminal({ token, isAdmin, adminName }) {
         },
       });
       const data = await response.json();
-      console.log(data);
       return data;
     } catch (error) {
       console.log(error);
@@ -181,13 +180,13 @@ export default function NotebTerminal({ token, isAdmin, adminName }) {
           if (userInd === -1 || last === -1) {
             return "Copy command requires two parameters -l, -u";
           }
-          console.log(userInd, last);
+          // console.log(userInd, last);
 
           if (!lastFindName) {
             return ["COPY INTERRUPT: User not found"];
           }
 
-          console.log(`TARGET: ${lastFindName}`);
+          // console.log(`TARGET: ${lastFindName}`);
           navigator.clipboard.writeText(lastFindName);
           return [`TARGET USER: ${lastFindName}\nSTATUS: COPIED`];
         } catch (error) {
