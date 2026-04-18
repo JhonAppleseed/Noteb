@@ -18,6 +18,8 @@ export default function App() {
     }
   }, []);
 
+  console.log("API URL:", import.meta.env.VITE_API_URL);
+
   return (
     <>
       {currentView === "login" && (
@@ -31,8 +33,8 @@ export default function App() {
       )}
       {currentView === "register" && (
         <Register
-          // onRegister={() => setCurrentView("login")}
-          onRegister={() => console.log("Register attempt")}
+          onRegister={() => setCurrentView("login")}
+          // onRegister={() => console.log("Register attempt")}
           onSwitchToLogin={() => setCurrentView("login")}
         />
       )}
