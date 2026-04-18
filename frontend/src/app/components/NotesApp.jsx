@@ -46,8 +46,6 @@ export function NotesApp({ onLogout, token }) {
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
-  console.log(userNoteData);
-
   const updateNoteContent = (content) => {
     setUserNoteData(
       userNoteData.map((note) =>
