@@ -4,7 +4,7 @@ import os
 
 def main():
     frontend = subprocess.Popen(
-        ["npm.cmd", "run", "dev"],
+        ["npm.cmd", "run", "build"],
         cwd=os.path.join(os.path.dirname(__file__), "frontend")
     )
     

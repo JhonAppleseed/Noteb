@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from datetime import date
 
 from backend.database import create_auth_table, create_content_table, get_conn
@@ -10,7 +11,6 @@ from backend.models import UserAuth, UserNoteInput, BanStatus
 
 import os
 
-import datetime
 
 app = FastAPI()
 
@@ -280,4 +280,16 @@ def ban_user_admin(id: int, body: BanStatus, authorization: str = Header(None, a
         print(e)
         return {'message': f'User not banned {e}'}
     
+
+
+
+
+    
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
+@app.get("/{full_path:path}")
+def serve_frontend(full_path: str):
+    return FileResponse("frontend/dist/index.html")
+
+
 #python -m uvicorn backend.main:app --reload
